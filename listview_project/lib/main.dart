@@ -1,7 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:listview_project/newform.dart';
+import 'package:sqflite/sqflite.dart';
 
-void main() {
+import 'dart:async';
+
+import 'package:path/path.dart';
+
+void main() async {
   runApp(const MyApp());
+
+  CreateDatabaseAndTable();
+}
+
+void CreateDatabaseAndTable() async {
+  final database = openDatabase(
+    // Set the path to the database. Note: Using the `join` function from the
+    // `path` package is best practice to ensure the path is correctly
+    // constructed for each platform.
+    join(await getDatabasesPath(), 'employee_database.db'),
+    // When the database is first created, create a table to store dogs.
+    onCreate: (db, version) {
+      // Run the CREATE TABLE statement on the database.
+      return db.execute(
+        'CREATE TABLE employees(id INTEGER PRIMARY KEY, name TEXT)',
+      );
+    },
+    // Set the version. This executes the onCreate function and provides a
+    // path to perform database upgrades and downgrades.
+    version: 1,
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -58,6 +85,9 @@ class _MyHomePageState extends State<MyHomePage> {
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
       _counter++;
+
+      Navigator.of(this.context)
+          .push(MaterialPageRoute(builder: (context) => newform()));
     });
   }
 
@@ -95,13 +125,13 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
+            // const Text(
+            //   'You have pushed the button this many times:',
+            // ),
+            // Text(
+            //   '$_counter',
+            //   style: Theme.of(context).textTheme.headline4,
+            // ),
           ],
         ),
       ),
